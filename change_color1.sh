@@ -2,7 +2,6 @@
 video_url=$(playerctl metadata xesam:url 2>/dev/null)
 
 if [[ "$video_url" != *"youtube.com"* ]]; then
-    echo "No YouTube video detected"
     exit 1
 fi
 
