@@ -9,9 +9,17 @@ video_id=$(echo "$video_url" | grep -oP 'v=\K[^&]+')
 
 thumbnail_url="https://img.youtube.com/vi/$video_id/maxresdefault.jpg"
 thumbnail_path="/tmp/yt-thumb.jpg"
+rm -f "$thumbnail_path"
+echo "Waiting for download..."
+while [ ! -f "$thumbnail_path" ]; do
+    curl -sf -o "$thumbnail_path" "https://img.youtube.com/vi/$video_id/maxresdefault.jpg" || \
+    curl -sf -o "$thumbnail_path" "https://img.youtube.com/vi/$video_id/hqdefault.jpg"
+    if [ ! -f "$thumbnail_path" ]; then
+        sleep 1
+    fi
+done
 
-curl -s -o "$thumbnail_path" "$thumbnail_url"
-
+echo "Image found! Proceeding with color extraction..."
 colors=$(convert "$thumbnail_path" -resize 50x50 -colors 9 -unique-colors txt:- \
 | awk -F' ' '/#/ {print $3}' | head -n 9)
 
@@ -38,5 +46,4 @@ sed -i "s/gradient_color_7.*/gradient_color_7 = '$color8'/" "$config"
 sed -i "s/gradient_color_8.*/gradient_color_8 = '$color9'/" "$config"
 
 pkill cava 2>/dev/null
-
 

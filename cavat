@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-nohup ~/.config/practice/check.sh > /dev/null 2>&1 &
-~/.config/practice/cavaa.sh% 
